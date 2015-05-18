@@ -11,4 +11,4 @@ master_doc = 'index'
 # Data
 project = u'tango-device-motor'
 copyright = u'2015, Tango Controls'
-release = '1.0'
+#release = '1.0'
