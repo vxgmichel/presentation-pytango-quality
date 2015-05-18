@@ -1,3 +1,7 @@
+name: empty layout
+layout: true
+
+---
 name: main title
 class: center, middle
 
@@ -24,11 +28,15 @@ Packaging with setuptools
 
 ***
 ---
-name: title 1
-class: center, middle
+name: unit testing layout
+layout: true
 
 1. Unit testing
 ===============
+
+---
+name: title 1
+class: center, middle
 
 **F**ast
 
@@ -50,15 +58,7 @@ Repeatable: requires an independant and isolated environment
 
 ***
 ---
-name: Unit testing
-layout: true
-
-1. Unit testing
-===============
-
----
-name: Unit testing - problems
-template: Unit testing
+name: unit testing - problems
 
 ## Problems
 
@@ -111,9 +111,7 @@ Makes it accessible
 
 ***
 ---
-
-name: Unit testing - devicetest
-template: Unit testing
+name: unit testing - devicetest
 
 ## devicetest python library
 
@@ -132,7 +130,9 @@ Fell free to fork it !
 - Provides:
 
   - a context manager
+
   - a command line interface
+
   - a test case base class
 
 ???
@@ -145,7 +145,9 @@ Uses unittest module
 --
 
 - Includes:
+
   - A detailed README
+
   - A demo project
 
 ???
@@ -154,8 +156,7 @@ More complete than the presentation, so have a look at it!
 
 ***
 ---
-name: Unit-testing - example 1
-template: Unit testing
+name: unit-testing - example 1
 
 ## Example - PyTango device
 
@@ -194,10 +195,9 @@ Simple device:
 
 ***
 ---
-name: Unit testing - example 2
-template: Unit testing
+name: unit testing - example 2
 
-## Example - context manager and CLI
+## Example - Context manager and CLI
 
 ```python
 >>> from devicetest import TangoTestContext
@@ -217,7 +217,7 @@ Context manager rocks!
 
 Enter: start the server
 
-Exit:  kill ther server 
+Exit: kill the server 
 
 Simple!
 
@@ -239,8 +239,7 @@ CLI equivalent, displaying accesses for clients
 
 ***
 ---
-name: Unit testing - example 3
-template: Unit testing
+name: unit testing - example 3
 
 ## Example - Test case
 
@@ -285,8 +284,7 @@ For three different angles:
 The Init command is run between each tests
 
 ---
-name: Unit testing - example 4
-template: Unit testing
+name: unit testing - example 4
 
 ## Example - Running the tests
 
@@ -333,6 +331,7 @@ Can be easily automated
 --
 
 Tests could also include:
+
 - commands, state machine, etc.
 
 ???
@@ -343,8 +342,7 @@ But it works fine with more complex devices (scope device)
 
 ***
 ---
-name: Unit testing - results
-template: Unit testing
+name: unit testing - results
 
 ### Results
 
@@ -413,4 +411,226 @@ Sooooo Sad!
 Coverage is great, but somehow, the tango layer messes up with its collector
 
 ***
+---
+name: documentation layout
+layout: true
+
+2. Documentation
+===============
+
+---
+name: title 2
+class: center, middle
+
+Generating documentation from the code 
+
+Sphinx extensions
+
+???
+
+Pogo can do it to, sure.
+
+But still, sphinx has many interesting features.
+
+---
+name: documentation - sphinx presentation
+
+### autodoc extension
+
+ - build an html documentation from python docstrings
+
+ - using directives in reStructuredText source files
+
+???
+
+Some notes
+
+***
+--
+
+### devicedoc extension
+
+ - Available on github
+
+   - [vxgmichel/python-tango-devicedoc](http://github.com/vxgmichel/python-tango-devicedoc)
+
+ - Includes:
+
+  - A detailed README
+
+  - A demo project
+
+???
+
+Some notes
+
+***
+---
+name: documentation - example 1
+
+## Example - PyTango Device
+
+Documented motor device:
+
+```python
+class Motor(Device):
+    """Motor device.
+
+    Device states description:
+        - **ON**: the device is up and running
+        - **FAULT**: cannot connect to the controller
+    """
+    __metaclass__ = DeviceMeta
+
+*   #: Can also be an IP address
+    host = device_property(
+        dtype=str,
+        doc="Hostname of the motor.")
+
+    [...]
+```
+
+???
+
+Some notes
+
+***
+---
+name: documentation - example 2
+
+## Example - PyTango Device
+
+Adding a command:
+
+```python
+    [...]
+
+    position = attribute(
+        dtype=float,
+        unit="degrees",
+        access=AttrWriteType.READ_WRITE,
+        doc="Current position of the motor.")
+
+    @command(
+        dtype_in=float, doc_in="angle in degrees",
+        dtype_out=float, doc_out="angle in radians")
+    def radians(self, arg):
+        """Convert the given angle from degrees to radians."""
+        return math.radians(arg)
+
+    [...]
+```
+
+???
+
+Some notes
+
+***
+---
+name: documentation - example 3
+
+## Example - Sphinx configuration
+
+Configuration file: `conf.py`
+
+```python
+master_doc = 'index'
+project = u'tango-device-motor'
+copyright = u'2015, Tango Controls'
+extensions = ['sphinx.ext.autodoc', 'devicedoc']
+```
+
+???
+
+Some notes
+
+***
+--
+
+Source file: `index.rst`
+
+```bash
+.. automodule:: motor
+    :members: Motor
+```
+
+???
+
+Some notes
+
+***
+--
+
+Build documentation
+
+```bash
+sphinx-build docs/source docs/builds
+```
+
+???
+
+Some notes
+
+***
+---
+name: documentation view
+template: empty layout
+background-image: url(documentation.png)
+
+???
+
+Some notes
+
+***
+---
+name: documentation - results
+
+### Features
+
+- More sphinx directive for customized documentation
+
+???
+
+Some notes
+
+***
+--
+
+- Possibility to automate builds (git hook, jenkins, etc.)
+
+???
+
+Some notes
+
+***
+--
+
+### Limitations
+
+- Not compatible with the old PyTango API
+
+???
+
+Some notes
+
+***
+--
+
+- Experimental, some syntaxes won't work as expected
+
+???
+
+Some notes
+
+***
+--
+
+- Rigid implementation of headers and sections
+
+???
+
+Some notes
+
+***
+
 
