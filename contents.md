@@ -17,13 +17,13 @@ class: center, middle
 1. Unit testing
 ===============
 
-Fast
+**F**ast
 
-Automated
+**A**utomated
 
-Isolated
+**I**solated
 
-Repeatable
+**R**epeatable
 
 ---
 name: Unit testing
@@ -137,9 +137,9 @@ Run the device `MyServer.MyDevice` locally
 usr@machine:/~python-devicetest$ python -m devicetest motor.Motor
 --prop "{'host':'10.10.10.10'}"
 Ready to accept request
-Motor started on port 10001 with properties {'host': '10.10.10.10'}.
-Device access: localhost:10001/test/nodb/motor#dbase=no
-Server access: localhost:10001/dserver/Motor/motor#dbase=no
+Motor started on port 55683 with properties {'host': '10.10.10.10'}.
+Device access: localhost:55683/test/nodb/motor#dbase=no
+Server access: localhost:55683/dserver/Motor/motor#dbase=no
 ```
 
 ---
@@ -156,39 +156,53 @@ class MotorTestCase(DeviceTestCase):
 
     @classmethod
     def mocking(cls):
-        cls.controller_cls = motor.MotorController = Mock(name="MotorController")
+        cls.controller_cls = motor.MotorController = Mock()
         cls.controller = motor.MotorController.return_value
     
     def test_properties(self):
-        self.controller_cls.assert_called_with('10.10.10.10:1234')
+*       self.controller_cls.assert_called_with('10.10.10.10:1234')
         
     def test_position(self):
-        for deg, rad in [(0, 0) (-90, -pi/2), (90, pi/2)]:
+        for deg, rad in [(0, 0), (-90, -pi/2), (90, pi/2)]:
             self.device.position = deg
-            self.controller.write.assert_called_with(rad)
+*           self.controller.write.assert_called_with(rad)
             self.controller.read.return_value = rad
-            self.assertEquals(self.device.position, deg)
-
+*           self.assertEquals(self.device.position, deg)
 ```
 
 ---
 name: Unit testing - example 4
 template: Unit testing
 
-## Example - Running the test
+## Example - Running the tests
+
+Using nose:
 
 ```bash
-$ nosetests test_directory --process-restartworker --processes=1
+$ nosetests test_motor --processes=1 --process-restartworker --verbose
 ```
 
-Output:
+--
+
+Tests output:
 
 ```bash
-PASTE OUTPUT HERE
+test_position (test_motor.MotorTestCase) ... ok
+test_properties (test_motor.MotorTestCase) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.043s
+
+OK
 ```
+
+--
+
+Tests could also include:
+- commands, state machine, etc.
 
 ---
-name: Unit testing - 
+name: Unit testing - results
 template: Unit testing
 
 ### Results
