@@ -1,0 +1,3 @@
+.. automodule:: motor
+    :members: Motor
+
