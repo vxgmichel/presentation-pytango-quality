@@ -545,8 +545,8 @@ Configuration file: `conf.py`
 
 ```python
 master_doc = 'index'
-project = u'tango-device-motor'
-copyright = u'2015, Tango Controls'
+project = 'tango-device-motor'
+copyright = '2015, Tango Controls'
 extensions = ['sphinx.ext.autodoc', 'devicedoc']
 ```
 
@@ -818,7 +818,7 @@ setup(name="tangods-motor",
       version="0.1.0",
       description="Device server for a simple motor.",
       long_description=open("README.md").read(),
-      packages=["scopedevice"],
+      packages=["motor"],
       scripts=["script/Motor"],
       test_suite="nose.collector",
       cmdclass={'upload_pages': UploadPages},
