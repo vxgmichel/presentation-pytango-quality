@@ -120,6 +120,8 @@ name: unit testing - devicetest
 
   - [vxgmichel/python-tango-devicetest](http://github.com/vxgmichel/python-tango-devicetest)
 
+  - includes a detailed README and a demo project
+
 ???
 
 Feel free to fork it !
@@ -140,19 +142,6 @@ Feel free to fork it !
 Requirement: PyTango >= 8.1.1
 
 Uses unittest module
-
-***
---
-
-- Includes:
-
-  - A detailed README
-
-  - A demo project
-
-???
-
-More complete than the presentation, so have a look at it!
 
 ***
 ---
@@ -348,25 +337,15 @@ name: unit testing - results
 
  - Tests are independant as long as the `Init` command clears the device state
 
+ - Works for devices using an internal thread
+
+ - Quite fast: less than 100ms for simple test cases
+
 ???
 
 This should usually be the case (except for ALBA devices)
 
-***
---
-
- - Works for devices using an internal thread
-
-???
-
 Requires more precaution, but works fine (scope device)
-
-***
---
-
- - Quite fast: less than 100ms for simple test cases 
-
-???
 
 Up to a few seconds for big devices with inner thread
 
@@ -377,36 +356,19 @@ Up to a few seconds for big devices with inner thread
 
  - Using a test context twice will produce a segmentation fault
 
-???
-
-Known issue in PyTango, might be possible to use RestartServer once it is fixed
-
-***
---
-
  - Properties cannot be changed between each test
 
-???
-
-Probably the biggest issue, even though it is possible to use several test modules
-
-***
---
-
  - Tango events are not supported by the '--file' execution mode
-
-???
-
-Another big issue, see the documentation for more details, though it can be mocked 
-
-***
---
 
  - Not compatible with the coverage tool "coverage"
 
 ???
 
-Sooooo Sad! 
+Known issue in PyTango, might be possible to use RestartServer once it is fixed
+
+Probably the biggest issue, even though it is possible to use several test modules
+
+Another big issue, see the documentation for more details, though it can be mocked 
 
 Coverage is great, but somehow, the tango layer messes up with its collector
 
@@ -607,18 +569,11 @@ name: documentation - results
 
 - More sphinx directive for customized documentation
 
-???
-
-Again, the scope project is a good example of that
-
-See the README
-
-***
---
-
 - Possibility to automate builds (git hook, jenkins, etc.)
 
 ???
+
+Again, the scope project is a good example of that
 
 Or uploading on github pages
 
@@ -629,25 +584,15 @@ Or uploading on github pages
 
 - Not compatible with the old PyTango API
 
-???
-
-And it's probably not gonna change
-
-***
---
-
 - Experimental, some syntaxes won't work as expected
-
-???
-
-Yep, sorry about that!
-
-***
---
 
 - Rigid implementation of headers and sections
 
 ???
+
+And it's probably not gonna change
+
+Yep, sorry about that!
 
 Again, feel free to work on it!
 
