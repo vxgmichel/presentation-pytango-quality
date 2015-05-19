@@ -122,7 +122,7 @@ name: unit testing - devicetest
 
 ???
 
-Fell free to fork it !
+Feel free to fork it !
 
 ***
 --
@@ -207,7 +207,7 @@ name: unit testing - example 2
 ...     print proxy.position
 ```
 
-Run the device `MyServer.MyDevice` locally
+Run the device `motor.Motor` locally
  - optional properties, port and debug level
  - compatible with old and new API
 
@@ -443,7 +443,11 @@ name: documentation - sphinx presentation
 
 ???
 
-Some notes
+Probably the most important extension of sphinx
+
+Structure the documentation with rst files
+
+But fetch the contents directly from the code
 
 ***
 --
@@ -462,7 +466,9 @@ Some notes
 
 ???
 
-Some notes
+That extension recognizes TANGO object and adapt to generate the documentation
+
+Again feel free to play with it!
 
 ***
 ---
@@ -477,8 +483,8 @@ class Motor(Device):
     """Motor device.
 
     Device states description:
-        - **ON**: the device is up and running
-        - **FAULT**: cannot connect to the controller
+*       - **ON**: the device is up and running
+*       - **FAULT**: cannot connect to the controller
     """
     __metaclass__ = DeviceMeta
 
@@ -492,7 +498,9 @@ class Motor(Device):
 
 ???
 
-Some notes
+First note: `rst` syntaxes inside docstrings
+
+Second note: "hash + column" notation to add documentation to python attributes
 
 ***
 ---
@@ -507,13 +515,13 @@ Adding a command:
 
     position = attribute(
         dtype=float,
-        unit="degrees",
+*       unit="degrees",
         access=AttrWriteType.READ_WRITE,
         doc="Current position of the motor.")
 
     @command(
-        dtype_in=float, doc_in="angle in degrees",
-        dtype_out=float, doc_out="angle in radians")
+*       dtype_in=float, doc_in="angle in degrees",
+*       dtype_out=float, doc_out="angle in radians")
     def radians(self, arg):
         """Convert the given angle from degrees to radians."""
         return math.radians(arg)
@@ -523,7 +531,9 @@ Adding a command:
 
 ???
 
-Some notes
+Adding the unit to the position attribute arguments
+
+Adding a command that converts a float to a float
 
 ***
 ---
@@ -542,7 +552,9 @@ extensions = ['sphinx.ext.autodoc', 'devicedoc']
 
 ???
 
-Some notes
+Minimal configuration file
+
+Includes metadata and settings
 
 ***
 --
@@ -556,7 +568,9 @@ Source file: `index.rst`
 
 ???
 
-Some notes
+Minimal `rst` file.
+
+Using the `automodule` directive to generate the documentation for `motor.Motor`
 
 ***
 --
@@ -569,7 +583,9 @@ sphinx-build docs/source docs/builds
 
 ???
 
-Some notes
+A simple command to build the doc
+
+source to destination
 
 ***
 ---
@@ -579,7 +595,9 @@ background-image: url(documentation.png)
 
 ???
 
-Some notes
+So that's what we get.
+
+Check all the docstrings out.
 
 ***
 ---
@@ -591,7 +609,9 @@ name: documentation - results
 
 ???
 
-Some notes
+Again, the scope project is a good example of that
+
+See the README
 
 ***
 --
@@ -600,7 +620,7 @@ Some notes
 
 ???
 
-Some notes
+Or uploading on github pages
 
 ***
 --
@@ -611,7 +631,7 @@ Some notes
 
 ???
 
-Some notes
+And it's probably not gonna change
 
 ***
 --
@@ -620,7 +640,7 @@ Some notes
 
 ???
 
-Some notes
+Yep, sorry about that!
 
 ***
 --
@@ -629,8 +649,283 @@ Some notes
 
 ???
 
-Some notes
+Again, feel free to work on it!
 
 ***
+---
+name: packaging layout
+layout: true
+
+3. Packaging
+============
+
+---
+name: title 2
+class: center, middle
+
+Package structure in python
+
+`setup.py` as a Makefile
+
+???
+
+Most of it apply to all python packages
+
+More repositories with smaller projects
+
+---
+name: packaging - package structure
+
+## Package structure
+
+Example with standard structure:
+
+```bash
+|- README.md
+|- setup.py
+|- setup.cfg
+|- motor/
+|    |- __init__.py
+|    |- __main__.py
+|    |- device.py
+|    |- server.py
+|- script/
+|    |- Motor
+|- test/
+|    |- test_motor.py
+|- docs/
+|    |- source/
+|    |     |- index.rst
+|    |     |- conf.py
+```
+
+???
+
+5 parts:
+
+- setup for packaging
+
+- package or packages 
+
+- scripts to install
+
+- unit tests
+
+- documentation sources
+
+***
+---
+
+#### `device.py` and `server.py`
+
+Might interesting to:
+
+- Split device and server in two modules
+
+???
+
+Helps to make the distinction
+
+A matter of taste probably
+
+***
+--
+
+- Get rid of the filename dependency to run the server:
+
+  ```python
+  from PyTango import server
+  from motor.device import Motor
+
+  SERVER_NAME = "Motor"
+
+  def run(args=None, **kwargs):
+      if not args:
+          args = sys.argv[1:]
+      args = [SERVER_NAME] + list(args)
+      server.run((Motor,), args, **kwargs)
+  
+  if __name__ == "__main__":
+      run()
+  ```
+
+???
+
+Allows to run the server from anywhere
+
+***
+---
+
+#### `__init__.py`
+
+Make interesting objects visible at package level
+
+```python
+from motor.device import Motor
+from motor.server import run
+```
+
+```python
+>>> from motor import run
+run(["instance_name"])
+```
+
+???
+
+True for all python packages
+
+Example: easily run the server from python interpreter
+
+***
+--
+
+#### `__main__.py`
+
+Take profit  of `-m` option
+
+```python
+from motor.server import run
+run()
+```
+
+``` bash
+$ python -m motor instance_name -v3
+```
+
+???
+
+-m option: run the given library module as a script
+
+`__main__.py` is called when running a package as a script
+
+Won't work with python 2.6 and before
+
+Example: easily run the server from the console 
+
+
+***
+---
+
+#### `setup.py`
+
+Metadata, packaging information and custom commands
+
+```python
+from setuptools import setup
+from commands import UploadPages
+
+setup(name="tangods-motor",
+      version="0.1.0",
+      description="Device server for a simple motor.",
+      long_description=open("README.md").read(),
+      packages=["scopedevice"],
+      scripts=["script/Motor"],
+      test_suite="nose.collector",
+      cmdclass={'upload_pages': UploadPages},
+      )
+```
+
+#### `________`
+
+
+See `distutils` and `setuptools` documentation for more information
+
+???
+
+`setup.py` includes:
+
+- Metadata: name, version, descritpion
+
+- Packaging: packages, script, test_suite
+
+- Custom commands: here pusblish documentation on github pages 
+
+***
+---
+
+#### `setup.cfg`
+
+Add options for setup commands
+
+```bash
+[bdist_rpm]
+requires = python-motorlib
+build_requires = python-setuptools
+
+[nosetests]
+where = test
+processes = 1 
+process-restartworker = 1
+
+[build_sphinx]
+source-dir = docs/source
+build-dir  = docs/build
+```
+
+#### `________`
+
+See `distutils` and `setuptools` documentation for more information
+
+???
+
+Add options for:
+
+- building rpm: dependencies
+
+- unittesting: multiprocessing (cf first part)
+
+- documentation: directories (cf second part)
+
+***
+---
+
+## Usage
+
+```bash
+# Run server from package
+$ python -m motor instance_name
+# Install
+$ python setup.py install
+# Run server from script
+$ Motor instance_name
+# Tests
+$ python setup.py nosetests
+# Build docs 
+$ python setup.py build_sphinx
+# Upload documentation
+$ python setup.py update_pages
+# Build rpm
+$ python setup.py bdist_rpm
+```
+
+A full example on github:
+
+- [MaxIV-KitsControls/dev-maxiv-scope](https://github.com/MaxIV-KitsControls/dev-maxiv-scope)
+
+???
+
+Just listing previously seen commands
+
+Have a look at the scope device repo
+
+***
+---
+name: final
+layout: false
+class: center, middle
+
+Questions ?
+===========
+
+___
+
+Presentation written in `Markdown` and rendered by [remark](http://remarkjs.com/) slideshow tool
+
+Sources for this presentation can be found on github
+
+[vxgmichel/presentation-pytango-quality](https://github.com/vxgmichel/presentation-pytango-quality)
+
+Thanks
+
 
 
