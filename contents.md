@@ -838,7 +838,7 @@ $ python setup.py nosetests
 # Build docs 
 $ python setup.py build_sphinx
 # Upload documentation
-$ python setup.py update_pages
+$ python setup.py upload_pages
 # Build rpm
 $ python setup.py bdist_rpm
 ```
